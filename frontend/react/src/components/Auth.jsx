@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-export function Auth({users}) {
+import { getUser } from "../fetch/getUser"
+export function Auth({users, handleLogin}) {
     const [formData, setFormData] = useState({
         login: '',
         password: ''
@@ -19,20 +20,22 @@ export function Auth({users}) {
             alert('Вы не заполнили все поля')
             return
         }
-       const user = users.find(u => u.login === formData.login);
-
-    if (!user) {
-      alert("Пользователь не найден");
-      return;
+    async function check() {
+        const userDB = await getUser(formData)
+        if (userDB.length !== 0) {
+            const user = userDB[0]
+            handleLogin(user.id)
+            if(userDB.login === 'Admin'){
+                nav('/admin')
+            }else{
+                nav('/')
+            }
+        }else{
+            alert('Неверный логин или пароль')
+        }
     }
+    check()
 
-    if (user.password !== formData.password) {
-      alert("Неверный пароль");
-      return;
-    }
-
-    alert("Авторизация успешна!");
-    nav("/");
 }
     return (
         <>
@@ -43,7 +46,7 @@ export function Auth({users}) {
                 <span>Пароль</span><br />
                 <input type="password" name="password" value={formData.password} onChange={onChange} /><br />
                 <button>Войти</button>
-                <p onClick={() => nav('/')}>Еще не зарегистрированы?</p>
+                <p onClick={() => nav('/reg')}>Еще не зарегистрированы?</p>
             </form>
 
         </>
