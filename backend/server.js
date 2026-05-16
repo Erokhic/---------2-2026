@@ -42,15 +42,19 @@ connection.query(sql,user, function(err, results) {
 
 })
 
+
 app.post("/auth", function(req, res){
 const user = [req.body.login, req.body.password]
-connection.query("SELECT * FROM user WHERE login = ? AND password = ?", user, function(err, results) {
+const sql = "SELECT * FROM user WHERE login=? AND password=?"
+connection.query(sql,user, function(err, results) {
     if(err) console.log(err);
     else console.log(results) 
     res.json(results);
 });
 
 })
+
+
 
 
 
@@ -77,15 +81,15 @@ connection.query("INSERT INTO request (id_user, id_status, id_payment_method, co
 })
 
  
-// app.get("/requests/:userId", function(req, res){
+app.get("/requests/:userId", function(req, res){
 
-// connection.query("SELECT * FROM request WHERE id_user=?", function(err, results) {
-//     if(err) console.log(err);
-//     else console.log(results) 
-//     res.json(results);
-// });
+connection.query("SELECT * FROM request WHERE id_user=?", function(err, results) {
+    if(err) console.log(err);
+    else console.log(results) 
+    res.json(results);
+});
 
-// })
+})
 
 
  
@@ -134,7 +138,15 @@ connection.query(sql, function(err, results) {
 })
 
 
+app.get("/statuses", function(req, res){
 
+connection.query("SELECT id, name FROM status", function(err, results) {
+    if(err) console.log(err);
+    else console.log(results) 
+    res.json(results);
+});
+
+})
 
 
 

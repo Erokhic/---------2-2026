@@ -3,13 +3,15 @@ import { useNavigate } from "react-router-dom"
 import { getUser } from "../fetch/getUser"
 import { getUserById } from "../fetch/getUserById"
 import { allRequestions } from "../fetch/allRequestions"
+import { getStatuses } from "../fetch/getStatuses"
 
 export function AdminPanel({userId}) {
 const nav = useNavigate()   
 const [requests, setRequests]= useState([])
-
+const [statuses, setStatuses]= useState([])
 
 useEffect(()=>{
+   
     const checkAdmin = async ()=>{
 if (!userId) {
      alert('Сначала авторизуйтесь!')
@@ -31,6 +33,9 @@ try {
     }
 const requestData = await allRequestions()
 setRequests(requestData)
+
+const statuseData = await getStatuses()
+ setStatuses(statuseData)
 
 } catch (error) {
     console.log(error);
@@ -71,8 +76,11 @@ setRequests(requestData)
                                 <td>{request.payment_name}</td>
                                 <td>{request.course_name}</td>
                                 <td>{new Date(request.start_date).toLocaleDateString()}</td>
-                                <td><select>
-                                    <option value="">{request.status_name}</option>
+                                <td><select>{
+                                    statuses.map((status)=>(
+                                        <option key={status.id} value={status.id}>{status.name}</option>
+                                    ))
+                                    }
                                     </select>
                                     </td>
                             </tr>
@@ -80,7 +88,7 @@ setRequests(requestData)
                     )}
                 </tbody>
             </table>
-
+<button>Сохранить</button>
 
 
 </>
