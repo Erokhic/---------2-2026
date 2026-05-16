@@ -21,7 +21,6 @@ export function NewRequest({userId , addRequest}) {
             console.log(response);
             setPaymentMethod(response)  
             }
-            
             catch (error) {
                 console.log(error);
             }

@@ -25,8 +25,9 @@ export function Auth({users, handleLogin}) {
         if (userDB.length !== 0) {
             const user = userDB[0]
             handleLogin(user.id)
-            if(userDB.login === 'Admin'){
+            if(user.id_role === 2){
                 nav('/admin')
+                return
             }else{
                 nav('/')
             }

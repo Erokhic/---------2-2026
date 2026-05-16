@@ -20,7 +20,15 @@ connection.query("SELECT * FROM user", function(err, results) {
 
 })
  
+app.get("/user/:id", function(req, res){
+const userId = req.params.id
+connection.query("SELECT id, login, id_role FROM user WHERE id =?", [userId], function(err, results) {
+    if(err) console.log(err);
+    else console.log(results) 
+    res.json(results);
+});
 
+})
 
 app.post("/reg", function(req, res){
 const defaultRoleId = 1
@@ -69,9 +77,22 @@ connection.query("INSERT INTO request (id_user, id_status, id_payment_method, co
 })
 
  
-app.get("/requests/:userId", function(req, res){
+// app.get("/requests/:userId", function(req, res){
 
-connection.query("SELECT * FROM request WHERE id_user=?", function(err, results) {
+// connection.query("SELECT * FROM request WHERE id_user=?", function(err, results) {
+//     if(err) console.log(err);
+//     else console.log(results) 
+//     res.json(results);
+// });
+
+// })
+
+
+ 
+app.get("/coursesNames/:id", function(req, res){
+const userId =parseInt(req.params.id) 
+const sql = "SELECT id, course_name FROM request WHERE id_user=?"
+connection.query(sql,[userId] ,function(err, results) {
     if(err) console.log(err);
     else console.log(results) 
     res.json(results);
@@ -79,11 +100,38 @@ connection.query("SELECT * FROM request WHERE id_user=?", function(err, results)
 
 })
 
+app.post("/addNewComment", function(req, res){
+const  created_at= new Date()
+const formData = [req.body.id_user,req.body.id_request,req.body.text_comment,created_at]
+connection.query("INSERT INTO comment (id_user, id_request, text_comment, created_at)VALUES(?,?,?,?)", formData, function(err, results) {
+    if(err) console.log(err);
+    else console.log(results) 
+    res.json(results);
+});
+})
 
 
+app.get("/allRequestions", function(req, res){
+const sql = `
+        SELECT  
+            u.full_name, 
+            p.name as payment_name, 
+            r.course_name, 
+            r.start_date, 
+            s.name as status_name 
+        FROM request r
+        JOIN user u ON u.id = r.id_user
+        JOIN status s ON s.id = r.id_status
+        JOIN payment_method p ON p.id = r.id_payment_method
+        ORDER BY r.start_date DESC
+    `
+connection.query(sql, function(err, results) {
+    if(err) console.log(err);
+    else console.log(results) 
+    res.json(results);
+});
 
-
-
+})
 
 
 
