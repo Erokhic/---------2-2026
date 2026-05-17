@@ -82,8 +82,8 @@ connection.query("INSERT INTO request (id_user, id_status, id_payment_method, co
 
  
 app.get("/requests/:userId", function(req, res){
-
-connection.query("SELECT * FROM request WHERE id_user=?", function(err, results) {
+const userId = req.params.userId;
+connection.query("SELECT * FROM request WHERE id_user=? ",[userId],function(err, results) {
     if(err) console.log(err);
     else console.log(results) 
     res.json(results);
@@ -118,11 +118,13 @@ connection.query("INSERT INTO comment (id_user, id_request, text_comment, create
 app.get("/allRequestions", function(req, res){
 const sql = `
         SELECT  
+        r.id,
             u.full_name, 
             p.name as payment_name, 
             r.course_name, 
             r.start_date, 
-            s.name as status_name 
+            s.name as status_name,
+             r.id_status 
         FROM request r
         JOIN user u ON u.id = r.id_user
         JOIN status s ON s.id = r.id_status
@@ -149,10 +151,28 @@ connection.query("SELECT id, name FROM status", function(err, results) {
 })
 
 
+app.get("/comments", function(req, res){
+
+connection.query("SELECT id_request , text_comment FROM comment", function(err, results) {
+    if(err) console.log(err);
+    else console.log(results) 
+    res.json(results);
+});
+
+})
 
 
-
-
+app.put('/api/requests/:id/status', async (req, res) => {
+    const requestId = req.params.id
+    const statusId = req.body.id_status
+    try {
+        const query = 'UPDATE request SET id_status = ? WHERE id = ?'
+        await connection.query(query, [statusId, requestId])
+        res.json({ success: true })
+    } catch (err) {
+         console.log(err);
+    }
+})
 
 
 

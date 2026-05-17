@@ -33,7 +33,7 @@ export function Auth({ userId,  handleLogin}) {
                     nav('/admin')
                     return
                 } else {
-                    nav('/')
+                    nav('/requests')
                 }
             } else {
                 alert('Неверный логин или пароль')
@@ -63,7 +63,7 @@ export function Auth({ userId,  handleLogin}) {
                 <span>Пароль</span><br />
                 <input type="password" name="password" value={formData.password} onChange={onChange} /><br />
                 <button type="submit">Войти</button>
-                <p onClick={()=> nav('/reg')}>Еще не зарегистрированы?</p>
+                <p onClick={()=> nav('/')}>Еще не зарегистрированы?</p>
             </form>
 
         </>

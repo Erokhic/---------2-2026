@@ -22,7 +22,6 @@ const [comments, setComments]= useState([])
 
 const handleLogin = (userId)=>{
   setCurrentUserId(userId) //Сохраняем ID авторизованного пользователя
-
 }
 
 
@@ -39,8 +38,8 @@ pushComment(newComment)
   return (
     <>
       <Routes>
-        <Route path='/' element={<PageRequests userId={currentUserId} addComment={addComment}/>} />
-         <Route path="/reg" element={<Reg addUser={addUser} />} />
+        <Route path='/requests' element={<PageRequests userId={currentUserId} addComment={addComment}/>} />
+         <Route path="/" element={<Reg addUser={addUser} />} />
            <Route path="/auth" element={<Auth users={users} handleLogin={handleLogin}/>} />
            <Route path='/newRequest' element={<NewRequest userId={currentUserId} addRequest={addRequest}/>} />
               <Route path="/admin" element={<AdminPanel userId={currentUserId}/>} />

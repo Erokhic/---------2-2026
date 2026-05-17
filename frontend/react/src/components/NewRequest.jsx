@@ -15,6 +15,12 @@ export function NewRequest({userId , addRequest}) {
     const [paymentMethod, setPaymentMethod] = useState([])
 
     useEffect(() => {
+if(!userId){
+    alert('Пожалуйста, авторизуйтесь!')
+    console.log('userId в NewRequest:', userId)
+    nav('/auth')
+    return
+}
         const fetchMethod = async () => {
             try{
               const response = await getPaymentMethod()
@@ -34,12 +40,7 @@ fetchMethod()
 
 const onSubmit = async (e)=>{
     e.preventDefault()
-if(!userId){
-    alert('Пожалуйста, авторизуйтесь!')
-    console.log('userId в NewRequest:', userId)
-    nav('/auth')
-    return
-}
+
 
     if(!formData.course_name.trim()){
         alert('Заполните название курса')
@@ -74,7 +75,7 @@ if(!formData.payment_method){
         start_date: '',
         payment_method: '' 
         })
-        nav('/')
+        nav('/requests')
     }
 
 }
