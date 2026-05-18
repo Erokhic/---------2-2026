@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom"
 import { useState, useEffect } from "react"
-// import { getCourseName} from "../fetch/getCourseName.js"
 import { getStatuses } from "../fetch/getStatuses.js"
 import { userRequests } from "../fetch/UserRequests.js"
 import { getPaymentMethod } from "../fetch/getPaymentMethod.js"
@@ -8,7 +7,7 @@ import { getComment } from "../fetch/getComment.js"
 
 
 
-export function PageRequests({ userId, addComment }) {
+export function PageRequests({ userId, addComment , handleLogout }) {
 
     const nav = useNavigate()
     const [requests, setRequests] = useState([])
@@ -19,16 +18,7 @@ export function PageRequests({ userId, addComment }) {
         id_request: '',
         text_comment: ''
     })
-    const handleNewRequest = () => {
-        if (!userId) {
-            alert('Пожалуйста, авторизуйтесь')
-            nav('/auth')
-            return
-        } else {
-            nav('/newRequest')
-        }
-
-    }
+   
 
     const onSubmit = (e) => {
         e.preventDefault()
@@ -68,17 +58,16 @@ export function PageRequests({ userId, addComment }) {
         const payment = paymentMethods.find(p => p.id === paymentId)
         return payment ? payment.name : 'Название'
     }
-
+ 
+  
     useEffect(() => {
-        const parsedId = Number(userId)
-        const selectedCourses = async () => {
-           if (!userId) {
-            alert('Пожалуйста, авторизуйтесь')
-            nav('/auth')
-            return
-        }
+         if (userId==null) {
+        nav("/auth");
+        return;
+      }
+          const fetchData = async () => {
             try {
-                const requestsData = await userRequests(parsedId)
+                const requestsData = await userRequests(userId)
                 setRequests(requestsData)
 
                 const statusesData = await getStatuses()
@@ -94,7 +83,7 @@ export function PageRequests({ userId, addComment }) {
                 console.log(error);
             }
         }
-        selectedCourses()
+        fetchData()
     }, [userId])
   const getCommentDisplay = (requestId) => {
          const requestComment = comments.find(comment => comment.id_request === requestId)
@@ -105,9 +94,9 @@ export function PageRequests({ userId, addComment }) {
     }
     return (
         <>
-        <button onClick={()=>nav('/')}>Выйти</button>
+        <button onClick={()=> handleLogout()}>Выйти</button>
             <h2>Мои заявки</h2>
-            <button type="button" onClick={handleNewRequest}>Подать заявку</button>
+            <button type="button" onClick={()=> nav('/newRequest')}>Подать заявку</button>
             <form onSubmit={onSubmit}>
                 <h2>Оставить отзыв</h2>
                 <select name="id_request" value={comment.id_request} onChange={onChange}>
